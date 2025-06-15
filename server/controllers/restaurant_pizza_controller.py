@@ -1,41 +1,64 @@
 from flask import Blueprint, request, jsonify
-from server.models import RestaurantPizza, db, Pizza, Restaurant
+from server.models import db
+from server.models.pizza import Pizza
+from server.models.restaurant import Restaurant
+from server.models.restaurant_pizza import RestaurantPizza
 
-restaurant_pizzas_bp = Blueprint("restaurant_pizzas", __name__, url_prefix="/restaurant_pizzas")
+# Define the blueprint
+restaurant_pizzas_bp = Blueprint('restaurant_pizzas', __name__)
 
-@restaurant_pizzas_bp.route("/", methods=["POST"])
+@restaurant_pizzas_bp.route('/restaurant_pizzas', methods=['POST'])
+
 def create_restaurant_pizza():
-    data = request.get_json()
     try:
-        price = int(data.get("price", 0))
-        pizza_id = int(data["pizza_id"])
-        restaurant_id = int(data["restaurant_id"])
-    except (KeyError, ValueError, TypeError):
-        return jsonify({"errors": ["Invalid input"]}), 400
+        data = request.get_json()
 
-    if price < 1 or price > 30:
-        return jsonify({"errors": ["Price must be between 1 and 30"]}), 400
+        price = data.get('price')
+        pizza_id = data.get('pizza_id')
+        restaurant_id = data.get('restaurant_id')
 
-    new_entry = RestaurantPizza(price=price, pizza_id=pizza_id, restaurant_id=restaurant_id)
-    db.session.add(new_entry)
-    db.session.commit()
+        errors = []
 
-    pizza = Pizza.query.get(pizza_id)
-    restaurant = Restaurant.query.get(restaurant_id)
+        # Validate price range
+        if price is None or not isinstance(price, int) or not (1 <= price <= 30):
+            errors.append("Price must be between 1 and 30")
 
-    return jsonify({
-        "id": new_entry.id,
-        "price": new_entry.price,
-        "pizza_id": new_entry.pizza_id,
-        "restaurant_id": new_entry.restaurant_id,
-        "pizza": {
-            "id": pizza.id,
-            "name": pizza.name,
-            "ingredients": pizza.ingredients
-        },
-        "restaurant": {
-            "id": restaurant.id,
-            "name": restaurant.name,
-            "address": restaurant.address
-        }
-    }), 201
+        # Validate existence of Pizza and Restaurant
+        pizza = Pizza.query.get(pizza_id)
+        restaurant = Restaurant.query.get(restaurant_id)
+
+        if not pizza:
+            errors.append("Pizza not found")
+        if not restaurant:
+            errors.append("Restaurant not found")
+
+        # If there are any validation errors, return them
+        if errors:
+            return jsonify({"errors": errors}), 400
+
+        # Create the new restaurant-pizza association
+        new_rp = RestaurantPizza(price=price, pizza_id=pizza_id, restaurant_id=restaurant_id)
+        db.session.add(new_rp)
+        db.session.commit()
+
+        # Return a joined response with pizza and restaurant details
+        return jsonify({
+            "id": new_rp.id,
+            "price": new_rp.price,
+            "pizza_id": pizza.id,
+            "restaurant_id": restaurant.id,
+            "pizza": {
+                "id": pizza.id,
+                "name": pizza.name,
+                "ingredients": pizza.ingredients
+            },
+            "restaurant": {
+                "id": restaurant.id,
+                "name": restaurant.name,
+                "address": restaurant.address
+            }
+        }), 201
+
+    except Exception as e:
+        # Show actual error to help with debugging
+        return jsonify({"errors": [str(e)]}), 500
