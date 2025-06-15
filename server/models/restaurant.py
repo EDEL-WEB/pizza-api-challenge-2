@@ -10,7 +10,7 @@ class Restaurant(db.Model):
     name = Column(String, nullable=False)
     address = Column(String, nullable=False)
 
-    # Relationship to RestaurantPizza (one-to-many)
+    
     restaurant_pizzas = relationship(
         'RestaurantPizza',
         backref='restaurant',
