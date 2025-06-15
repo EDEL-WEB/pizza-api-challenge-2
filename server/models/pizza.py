@@ -10,5 +10,12 @@ class Pizza(db.Model):
     name = Column(String, nullable=False)
     ingredients = Column(String, nullable=False)
 
-    restaurant_pizzas = relationship('RestaurantPizza', backref='pizza')
+    # Relationship to the join table
+    restaurant_pizzas = relationship(
+        'RestaurantPizza',
+        backref='pizza',
+        cascade='all, delete-orphan'
+    )
+
+    # Indirect relationship to Restaurant via RestaurantPizza
     restaurants = association_proxy('restaurant_pizzas', 'restaurant')
