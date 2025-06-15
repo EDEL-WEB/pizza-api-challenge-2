@@ -1,6 +1,6 @@
-from server.models import db
-from sqlalchemy.orm import relationship
+from server.extensions import db
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.associationproxy import association_proxy
 
 class Pizza(db.Model):
@@ -10,12 +10,5 @@ class Pizza(db.Model):
     name = Column(String, nullable=False)
     ingredients = Column(String, nullable=False)
 
-    # Relationship to the join table
-    restaurant_pizzas = relationship(
-        'RestaurantPizza',
-        backref='pizza',
-        cascade='all, delete-orphan'
-    )
-
-    # Indirect relationship to Restaurant via RestaurantPizza
+    restaurant_pizzas = relationship('RestaurantPizza', back_populates='pizza')
     restaurants = association_proxy('restaurant_pizzas', 'restaurant')

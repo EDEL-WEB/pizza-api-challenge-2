@@ -1,4 +1,4 @@
-from server.models import db
+from server.extensions import db
 from sqlalchemy import Column, Integer, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 
@@ -11,11 +11,9 @@ class RestaurantPizza(db.Model):
     restaurant_id = Column(Integer, ForeignKey('restaurants.id'), nullable=False)
     pizza_id = Column(Integer, ForeignKey('pizzas.id'), nullable=False)
 
-    # Define relationships back to Restaurant and Pizza
-    restaurant = relationship('Restaurant', backref='restaurant_pizza_links')
-    pizza = relationship('Pizza', backref='restaurant_pizza_links')
+    pizza = relationship('Pizza', back_populates='restaurant_pizzas')
+    restaurant = relationship('Restaurant', back_populates='restaurant_pizzas')
 
-    # Ensure price is between 1 and 30
     __table_args__ = (
         CheckConstraint('price >= 1 AND price <= 30', name='check_price_range'),
     )
