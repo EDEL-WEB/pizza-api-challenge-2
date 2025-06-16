@@ -12,3 +12,10 @@ class Pizza(db.Model):
 
     restaurant_pizzas = relationship('RestaurantPizza', back_populates='pizza')
     restaurants = association_proxy('restaurant_pizzas', 'restaurant')
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "ingredients": self.ingredients
+        }

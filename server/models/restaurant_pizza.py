@@ -17,3 +17,19 @@ class RestaurantPizza(db.Model):
     __table_args__ = (
         CheckConstraint('price >= 1 AND price <= 30', name='check_price_range'),
     )
+
+    def to_dict(self, include_pizza=False, include_restaurant=False):
+        data = {
+            "id": self.id,
+            "price": self.price,
+            "pizza_id": self.pizza_id,
+            "restaurant_id": self.restaurant_id
+        }
+
+        if include_pizza:
+            data["pizza"] = self.pizza.to_dict()
+
+        if include_restaurant:
+            data["restaurant"] = self.restaurant.to_dict()
+
+        return data

@@ -11,6 +11,12 @@ Delete restaurants with cascading deletes
 
 Validate inputs and return meaningful error messages
 
+
+
+clone this repo:https://github.com/EDEL-WEB/pizza-api-challenge-2.git
+
+
+
  Project Structure
 
 pizza-api-challenge-2/
@@ -148,7 +154,7 @@ Error Response (e.g. pizza not found):
 {
   "errors": ["Pizza not found"]
 }
- ## 🔎 API Testing
+ ##  API Testing
 
 Use the provided Postman collection to test all API routes:
 

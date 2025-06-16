@@ -12,3 +12,15 @@ class Restaurant(db.Model):
 
     restaurant_pizzas = relationship('RestaurantPizza', back_populates='restaurant', cascade="all, delete")
     pizzas = association_proxy('restaurant_pizzas', 'pizza')
+
+    def to_dict(self, include_pizzas=False):
+        data = {
+            "id": self.id,
+            "name": self.name,
+            "address": self.address
+        }
+
+        if include_pizzas:
+            data["pizzas"] = [pizza.to_dict() for pizza in self.pizzas]
+
+        return data
