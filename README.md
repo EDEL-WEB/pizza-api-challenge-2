@@ -44,11 +44,10 @@ pizza-api-challenge-2/
 
  
 1.  Create a virtual environment
-python3 -m venv venv
-source venv/bin/activate
+pipenv install&&pipenv shell
 2.  Install dependencies
 
-pip install -r requirements.txt
+
 3.  Set up the environment
 
 export FLASK_APP=server.app:create_app
@@ -59,8 +58,8 @@ flask db migrate -m "Initial migration"
 flask db upgrade
 5.  Run the server
 
-flask run --port=5555
-API will be available at: http://127.0.0.1:5555
+flask run --port=5000
+API will be available at: http://127.0.0.1:5000
 
  Models
  Pizza
@@ -159,7 +158,7 @@ Error Response (e.g. pizza not found):
 Use the provided Postman collection to test all API routes:
 
 1. Open [Postman](https://www.postman.com/)
-2. Click **Import**
+2. Click Import
 3. Upload the file: `challenge-1-pizzas.postman_collection.json`
 4. Make sure your Flask server is running at `http://localhost:5000`
 5. Send requests to test routes like:
@@ -175,7 +174,7 @@ Double-check the pizza_id in your database. You can view existing pizzas with:
 bash
 Copy
 Edit
-curl http://127.0.0.1:5555/pizzas/
+curl http://127.0.0.1:5000/pizzas/
 2.  The current Flask app is not registered with this 'SQLAlchemy' instance
 Make sure you are:
 
@@ -186,7 +185,7 @@ Calling db.init_app(app) in app.py
 Running the server via:
 
 export FLASK_APP=server.app:create_app
-flask run --port=5555
+flask run --port=5000
  Tips
 Use PostgreSQL in production (easily replace SQLite).
 
