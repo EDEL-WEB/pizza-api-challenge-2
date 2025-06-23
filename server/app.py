@@ -10,13 +10,13 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from server import models  # 👈 ADD THIS LINE AFTER db.init_app()
+    from server import models  
 
     for controller in all_controllers:
         app.register_blueprint(controller)
 
     @app.route("/")
     def index():
-        return jsonify({"message": "🍕 Pizza API is running!"}), 200
+        return jsonify({"message": " Pizza API is running!"}), 200
 
     return app
